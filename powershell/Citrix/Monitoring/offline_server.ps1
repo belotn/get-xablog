@@ -1,0 +1,1 @@
+ get-xaserver |% { $tcpClient = New-Object System.Net.Sockets.TCPClient; try {$tcpClient.connect($_.IPAddresses[0],2512);}catch{$_.ServerName };$tcpClient.Close(); $tcpClient = $null };
