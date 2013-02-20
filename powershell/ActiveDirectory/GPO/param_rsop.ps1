@@ -17,6 +17,7 @@ Get-ADOrganizationalUnit -Filter *  -SearchBase $ou -SearchScope OneLevel | sele
 				      $computername = $computer.Name
 
 				      $account = $false
+					  $reg=$null
 				      $uninstallkey = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\ProfileList"
 				      #Ouverture de la ruche sur le serveur distant
 				      $reg=[microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$computername)
@@ -26,14 +27,15 @@ Get-ADOrganizationalUnit -Filter *  -SearchBase $ou -SearchScope OneLevel | sele
 				      $subkeys=$regkey.GetSubKeyNames()
 				      foreach($key in $subkeys){
 					      	$thisKey=$UninstallKey+"\\"+$key
-						$user = Get-ADUser -Identity $key
-						if($user.Name -match "^\d+$"){
-							$account = $user.name
-							#Go out User searching
-							break;
+							$user= $null
+							$user = Get-ADUser -Identity $key
+							if($user.Name -match "^\d+$"){
+								$account = $user.name
+								#Go out User searching
+								break;
+							}
 						}
-					}
-				      }
+				     
 				      if($account){
 					      get-GPResultantSetOfPolicy -Computer $computername -User $account -ReportType Xml -Path c:\tmp\report.xml
 					      if(test-path c:\tmp\report.xml){
